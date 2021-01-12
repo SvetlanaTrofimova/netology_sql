@@ -1,21 +1,21 @@
--- Вывести всех неактивных покупателей
+-- Р’С‹РІРµСЃС‚Рё РІСЃРµС… РЅРµР°РєС‚РёРІРЅС‹С… РїРѕРєСѓРїР°С‚РµР»РµР№
 select customer_id, first_name, last_name
 from customer
 where active = 0;
 
--- Вывести все фильмы, выпущенные в 2006 году
+-- Р’С‹РІРµСЃС‚Рё РІСЃРµ С„РёР»СЊРјС‹, РІС‹РїСѓС‰РµРЅРЅС‹Рµ РІ 2006 РіРѕРґСѓ
 select film_id, title
 from film
 where release_year = 2006;
 
--- Вывести 10 последних платежей за прокат фильмов
+-- Р’С‹РІРµСЃС‚Рё 10 РїРѕСЃР»РµРґРЅРёС… РїР»Р°С‚РµР¶РµР№ Р·Р° РїСЂРѕРєР°С‚ С„РёР»СЊРјРѕРІ
 select * from payment
 order by payment_date desc
 limit 10;
 
--- Дополнительная часть
+-- Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅР°СЏ С‡Р°СЃС‚СЊ
 
--- 1 вариант. Соединение через 3 таблицу с помощью column_name. В этом варианте получаются дубли ключей у таблиц film_actor и film_category, тк в них два поля имеют ограничение.
+-- 1 РІР°СЂРёР°РЅС‚. РЎРѕРµРґРёРЅРµРЅРёРµ С‡РµСЂРµР· 3 С‚Р°Р±Р»РёС†Сѓ СЃ РїРѕРјРѕС‰СЊСЋ column_name. Р’ СЌС‚РѕРј РІР°СЂРёР°РЅС‚Рµ РїРѕР»СѓС‡Р°СЋС‚СЃСЏ РґСѓР±Р»Рё РєР»СЋС‡РµР№ Сѓ С‚Р°Р±Р»РёС† film_actor Рё film_category, С‚Рє РІ РЅРёС… РґРІР° РїРѕР»СЏ РёРјРµСЋС‚ РѕРіСЂР°РЅРёС‡РµРЅРёРµ.
 
 select cc.column_name, aa.constraint_name, cc.data_type, cc.table_name 
 from information_schema.table_constraints as aa
@@ -25,7 +25,7 @@ left join information_schema.columns as cc
 	on bb.column_name = cc.column_name and bb.table_name = cc.table_name
 where aa.constraint_type = 'PRIMARY KEY';
 
--- 2 варинт. Соединение через ordinal_position. 
+-- 2 РІР°СЂРёРЅС‚. РЎРѕРµРґРёРЅРµРЅРёРµ С‡РµСЂРµР· ordinal_position. 
 
 select aaa.table_name, ccc.column_name, aaa.constraint_name, ccc.data_type 
 from information_schema.table_constraints as aaa
