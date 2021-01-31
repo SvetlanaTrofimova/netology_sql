@@ -1,11 +1,11 @@
---В каких городах больше одного аэропорта?
+--Р’ РєР°РєРёС… РіРѕСЂРѕРґР°С… Р±РѕР»СЊС€Рµ РѕРґРЅРѕРіРѕ Р°СЌСЂРѕРїРѕСЂС‚Р°?
 
 select city
 from airports
 group by city
 having count(airport_name) > 1
 
---В каких аэропортах есть рейсы, выполняемые самолетом с максимальной дальностью перелета?
+--Р’ РєР°РєРёС… Р°СЌСЂРѕРїРѕСЂС‚Р°С… РµСЃС‚СЊ СЂРµР№СЃС‹, РІС‹РїРѕР»РЅСЏРµРјС‹Рµ СЃР°РјРѕР»РµС‚РѕРј СЃ РјР°РєСЃРёРјР°Р»СЊРЅРѕР№ РґР°Р»СЊРЅРѕСЃС‚СЊСЋ РїРµСЂРµР»РµС‚Р°?
 
 select distinct departure_airport from flights
 where aircraft_code = (
@@ -13,22 +13,22 @@ where aircraft_code = (
 	order by "range" desc
 	limit 1)
 
--- Вывести 10 рейсов с максимальным временем задержки вылета
+-- Р’С‹РІРµСЃС‚Рё 10 СЂРµР№СЃРѕРІ СЃ РјР°РєСЃРёРјР°Р»СЊРЅС‹Рј РІСЂРµРјРµРЅРµРј Р·Р°РґРµСЂР¶РєРё РІС‹Р»РµС‚Р°
 
 select flight_no, (actual_departure - scheduled_departure) as aaa from flights
 where actual_departure notnull 
 order by aaa desc
 limit 10
 
--- Были ли брони, по которым не были получены посадочные талоны?
+-- Р‘С‹Р»Рё Р»Рё Р±СЂРѕРЅРё, РїРѕ РєРѕС‚РѕСЂС‹Рј РЅРµ Р±С‹Р»Рё РїРѕР»СѓС‡РµРЅС‹ РїРѕСЃР°РґРѕС‡РЅС‹Рµ С‚Р°Р»РѕРЅС‹?
 
 select distinct book_ref from tickets t
 left join boarding_passes bp on t.ticket_no = bp.ticket_no
 where bp.seat_no is null
 
--- Найдите свободные места для каждого рейса, их % отношение к общему количеству мест в самолете.
--- Добавьте столбец с накопительным итогом - суммарное накопление количества вывезенных пассажиров из каждого аэропорта на каждый день.
--- Т.е. в этом столбце должна отражаться накопительная сумма - сколько человек уже вылетело из данного аэропорта на этом или более ранних рейсах за день.
+-- РќР°Р№РґРёС‚Рµ СЃРІРѕР±РѕРґРЅС‹Рµ РјРµСЃС‚Р° РґР»СЏ РєР°Р¶РґРѕРіРѕ СЂРµР№СЃР°, РёС… % РѕС‚РЅРѕС€РµРЅРёРµ Рє РѕР±С‰РµРјСѓ РєРѕР»РёС‡РµСЃС‚РІСѓ РјРµСЃС‚ РІ СЃР°РјРѕР»РµС‚Рµ.
+-- Р”РѕР±Р°РІСЊС‚Рµ СЃС‚РѕР»Р±РµС† СЃ РЅР°РєРѕРїРёС‚РµР»СЊРЅС‹Рј РёС‚РѕРіРѕРј - СЃСѓРјРјР°СЂРЅРѕРµ РЅР°РєРѕРїР»РµРЅРёРµ РєРѕР»РёС‡РµСЃС‚РІР° РІС‹РІРµР·РµРЅРЅС‹С… РїР°СЃСЃР°Р¶РёСЂРѕРІ РёР· РєР°Р¶РґРѕРіРѕ Р°СЌСЂРѕРїРѕСЂС‚Р° РЅР° РєР°Р¶РґС‹Р№ РґРµРЅСЊ.
+-- Рў.Рµ. РІ СЌС‚РѕРј СЃС‚РѕР»Р±С†Рµ РґРѕР»Р¶РЅР° РѕС‚СЂР°Р¶Р°С‚СЊСЃСЏ РЅР°РєРѕРїРёС‚РµР»СЊРЅР°СЏ СЃСѓРјРјР° - СЃРєРѕР»СЊРєРѕ С‡РµР»РѕРІРµРє СѓР¶Рµ РІС‹Р»РµС‚РµР»Рѕ РёР· РґР°РЅРЅРѕРіРѕ Р°СЌСЂРѕРїРѕСЂС‚Р° РЅР° СЌС‚РѕРј РёР»Рё Р±РѕР»РµРµ СЂР°РЅРЅРёС… СЂРµР№СЃР°С… Р·Р° РґРµРЅСЊ.
 
 select f.departure_airport, f.actual_departure, fi.book_seats, (ac.all_seats - coalesce(fi.book_seats, 0)) as free_seats,
 round((ac.all_seats - coalesce(fi.book_seats, 0)) :: numeric / ac.all_seats :: numeric * 100, 2) as ratio,
@@ -41,12 +41,12 @@ left join (
 	select flight_id, count(seat_no) as book_seats from boarding_passes
 	group by flight_id) fi on f.flight_id = fi.flight_id
 	
--- Найдите процентное соотношение перелетов по типам самолетов от общего количества.
+-- РќР°Р№РґРёС‚Рµ РїСЂРѕС†РµРЅС‚РЅРѕРµ СЃРѕРѕС‚РЅРѕС€РµРЅРёРµ РїРµСЂРµР»РµС‚РѕРІ РїРѕ С‚РёРїР°Рј СЃР°РјРѕР»РµС‚РѕРІ РѕС‚ РѕР±С‰РµРіРѕ РєРѕР»РёС‡РµСЃС‚РІР°.
 
 select aircraft_code, round(count(flight_id) :: numeric / (select count(flight_id) from flights) :: numeric * 100, 2) ||'%' as ratio from flights
 group by aircraft_code 
 
--- Были ли города, в которые можно  добраться бизнес - классом дешевле, чем эконом-классом в рамках перелета?
+-- Р‘С‹Р»Рё Р»Рё РіРѕСЂРѕРґР°, РІ РєРѕС‚РѕСЂС‹Рµ РјРѕР¶РЅРѕ  РґРѕР±СЂР°С‚СЊСЃСЏ Р±РёР·РЅРµСЃ - РєР»Р°СЃСЃРѕРј РґРµС€РµРІР»Рµ, С‡РµРј СЌРєРѕРЅРѕРј-РєР»Р°СЃСЃРѕРј РІ СЂР°РјРєР°С… РїРµСЂРµР»РµС‚Р°?
 
 with cte_b as (
 	select distinct f.flight_id, a2.city, tf.fare_conditions, amount
@@ -60,12 +60,12 @@ cte_e as (
 	left join ticket_flights tf on tf.flight_id = f.flight_id
 	left join airports a2 on a2.airport_code = f.departure_airport
 	where tf.fare_conditions = 'Economy')
-select distinct cte_b.city, case when cte_b.amount - cte_e.amount > 0 then 'нет' else 'да' end as hhh
+select distinct cte_b.city, case when cte_b.amount - cte_e.amount > 0 then 'РЅРµС‚' else 'РґР°' end as hhh
 from cte_b
 left join cte_e on cte_b.flight_id = cte_e.flight_id
-where (case when cte_b.amount - cte_e.amount > 0 then 'нет' else 'да' end) = 'да'
+where (case when cte_b.amount - cte_e.amount > 0 then 'РЅРµС‚' else 'РґР°' end) = 'РґР°'
 
--- Между какими городами нет прямых рейсов?
+-- РњРµР¶РґСѓ РєР°РєРёРјРё РіРѕСЂРѕРґР°РјРё РЅРµС‚ РїСЂСЏРјС‹С… СЂРµР№СЃРѕРІ?
 
 with
 cte1 as (
@@ -84,7 +84,7 @@ from flights f
 left join airports a on a.airport_code = f.arrival_airport
 left join airports a2 on a2.airport_code = f.departure_airport 
 
--- Вычислите расстояние между аэропортами, связанными прямыми рейсами, сравните с допустимой максимальной дальностью перелетов  в самолетах, обслуживающих эти рейсы.
+-- Р’С‹С‡РёСЃР»РёС‚Рµ СЂР°СЃСЃС‚РѕСЏРЅРёРµ РјРµР¶РґСѓ Р°СЌСЂРѕРїРѕСЂС‚Р°РјРё, СЃРІСЏР·Р°РЅРЅС‹РјРё РїСЂСЏРјС‹РјРё СЂРµР№СЃР°РјРё, СЃСЂР°РІРЅРёС‚Рµ СЃ РґРѕРїСѓСЃС‚РёРјРѕР№ РјР°РєСЃРёРјР°Р»СЊРЅРѕР№ РґР°Р»СЊРЅРѕСЃС‚СЊСЋ РїРµСЂРµР»РµС‚РѕРІ  РІ СЃР°РјРѕР»РµС‚Р°С…, РѕР±СЃР»СѓР¶РёРІР°СЋС‰РёС… СЌС‚Рё СЂРµР№СЃС‹.
 
 select distinct a2.city as depc, a.city as arrc,
 round(acos((sind(a2.latitude)*sind(a.latitude)+cosd(a2.latitude)*cosd(a.latitude)*cosd(a2.longitude - a.longitude))) :: numeric * 6371, 2) as distance, a3."range", a3.model, 
